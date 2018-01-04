@@ -73,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    @Override
+  /*  @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-    }
+    }*/
 }
