@@ -12,17 +12,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    DatabaseHandler db;
+    TextView sendtv;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sendtv=findViewById(R.id.viewmess);
+        db = new DatabaseHandler(this);
         if (checkAndRequestPermissions()) {
             // carry on the normal flow, as the case of  permissions  granted.
         }
@@ -60,9 +62,22 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equalsIgnoreCase("otp")) {
                 final String message = intent.getStringExtra("message");
+                final String sender=intent.getStringExtra("sender");
 
                 TextView tv = (TextView) findViewById(R.id.txtview);
-                tv.setText(message);
+                tv.setText(sender+message);
+                String sms_send ="";
+                if(message.equalsIgnoreCase("QUOTE WHEAT"))
+                {
+                    //sms_send="N/A";
+                    List<Quotes> quotesList = db.getAllQuotes("WHEAT");
+                    for(Quotes quote: quotesList)
+                    {
+                        RefinedQuotes ref=new RefinedQuotes(quote,context,sender);
+                        sms_send+=ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton,";
+                    }
+                }
+                sendtv.setText(sms_send);
             }
         }
     };

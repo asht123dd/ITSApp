@@ -27,14 +27,16 @@ public class MySMSBroadCastReceiver extends BroadcastReceiver {
             smsm = new SmsMessage[pdus.length];
             for (int i=0; i<smsm.length; i++){
                 smsm[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-
-                sms_str += "\r\nMessage: ";
+                /*sms_str+=smsm[i].getOriginatingAddress();
+                sms_str+=" : ";*/
+                //sms_str += "\r\nMessage: ";
                 sms_str += smsm[i].getMessageBody().toString();
-                sms_str+= "\r\n";
+                //sms_str+= "\r\n";
 
-                String Sender = smsm[i].getOriginatingAddress();
+                String Sender = smsm[i].getOriginatingAddress().toString();
                 //Check here sender is yours
                 Intent smsIntent = new Intent("otp");
+                smsIntent.putExtra("sender",Sender);
                 smsIntent.putExtra("message",sms_str);
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(smsIntent);
