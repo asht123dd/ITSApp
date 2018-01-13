@@ -33,7 +33,7 @@ public class MySMSBroadCastReceiver extends BroadcastReceiver {
                 sms_str += smsm[i].getMessageBody().toString();
                 //sms_str+= "\r\n";
 
-                String Sender = smsm[i].getOriginatingAddress().toString();
+                String Sender = smsm[i].getOriginatingAddress();
                 //Check here sender is yours
                 Intent smsIntent = new Intent("otp");
                 smsIntent.putExtra("sender",Sender);

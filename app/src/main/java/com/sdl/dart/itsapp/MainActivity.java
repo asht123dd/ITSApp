@@ -1,16 +1,20 @@
 package com.sdl.dart.itsapp;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     TextView sendtv;
+    private int mMessageSentParts;
+    private int mMessageSentTotalParts;
+    private int mMessageSentCount;
+    String SENT = "SMS_SENT";
+    String DELIVERED = "SMS_DELIVERED";
+    int i;
+    ArrayList<String> strlist=new ArrayList<>();
+
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +82,24 @@ public class MainActivity extends AppCompatActivity {
                 if(message.equalsIgnoreCase("QUOTE WHEAT"))
                 {
                     //sms_send="N/A";
+                    i=0;
+                    RefinedQuotes ref;
                     List<Quotes> quotesList = db.getAllQuotes("WHEAT");
-                    for(Quotes quote: quotesList)
+                    for(Quotes quote:quotesList)
                     {
-                        RefinedQuotes ref=new RefinedQuotes(quote,context,sender);
-                        sms_send+=ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton,";
+
+                        ref=new RefinedQuotes(quote,context,sender);
+                        strlist.add(ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton.");
+                        sms_send+=ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton, ";
                     }
+
                 }
                 sendtv.setText(sms_send);
+                for(String str:strlist)
+                {
+                    sendSMS(sender,str);
+                }
+               // sendSMS(sender,sms_send.toString());
             }
         }
     };
@@ -86,6 +108,20 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).
                 registerReceiver(receiver, new IntentFilter("otp"));
         super.onResume();
+    }
+    //---sends an SMS message to another device---
+    @SuppressWarnings("deprecation")
+    private void sendSMS(String phoneNumber, String message)
+    {
+        Log.v("phoneNumber",phoneNumber);
+        Log.v("message",message);
+        PendingIntent pi = PendingIntent.getActivity(this, 0,
+                new Intent(this,Dummy.class), 0);
+        SmsManager sms = SmsManager.getDefault();
+        if(i>2)
+            return;
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+        ++i;
     }
 
   /*  @Override
