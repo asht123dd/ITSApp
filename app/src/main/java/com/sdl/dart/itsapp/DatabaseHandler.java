@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION=14;
+    private static final int DATABASE_VERSION=17;
     private static final String DATABASE_NAME="mpdb";
     private static final String TABLE_QUOTES="quotes";
     private static final String TABLE_RETAIL="retailers";
@@ -36,8 +36,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_QUOTES_TABLE = "CREATE TABLE "+TABLE_QUOTES+" ("+COMMODITY+" VARCHAR(15),"+QUANTITY+" INTEGER,"+PRICE+" REAL,"+RID+" INTEGER references "+TABLE_RETAIL+")";
         String CREATE_FARM_TABLE="CREATE TABLE "+TABLE_FARM+" ("+FID+" INTEGER,"+NAME+" VARCHAR(30),"+PHONE+" VARCHAR(15),"+LID+" INTEGER)";
         String INSERT_RETAIL="INSERT INTO "+TABLE_RETAIL+" values(1,\"Alankar Foods\",1),(2,\"Shri Ram Foods\",3),(3,\"Sandeep Foods\",4)";
-        String INSERT_QUOTES="INSERT INTO "+TABLE_QUOTES+" VALUES(\"WHEAT\",1,12230.08,1),(\"WHEAT\",2,12230,2),(\"WHEAT\",3,12000,3)";
-        String INSERT_FARM="INSERT INTO "+TABLE_FARM+" VALUES(1,\"Ashutosh Singh\",\"+917018074728\",2),(2,\"Ashirvad Singh\",\"+919309829236\",5)";
+        String INSERT_QUOTES="INSERT INTO "+TABLE_QUOTES+" VALUES(\"WHEAT\",1,12230.08,1),(\"WHEAT\",2,12230,2),(\"WHEAT\",3,12000,3),(\"POTATO\",1,12226.77,1),(\"POTATO\",2,12226,2),(\"POTATO\",3,12200,3)";
+        String INSERT_FARM="INSERT INTO "+TABLE_FARM+" VALUES(1,\"Ashutosh Singh\",\"+917018074728\",2),(2,\"Ashirvad Singh\",\"+919309829236\",5),(3,\"Lavkush Kumar Singh\",\"+919767681142\",6)";
+       // String INSERT_QUOTES="INSERT INTO "+TABLE_QUOTES+" VALUES(\"WHEAT\",1,12230.08,1),(\"WHEAT\",2,12230,2),(\"WHEAT\",3,12000,3)";
         sqLiteDatabase.execSQL(CREATE_RETAIL_TABLE);
         sqLiteDatabase.execSQL(CREATE_QUOTES_TABLE);
         sqLiteDatabase.execSQL(CREATE_FARM_TABLE);

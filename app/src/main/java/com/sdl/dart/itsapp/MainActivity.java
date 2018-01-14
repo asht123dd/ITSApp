@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private int mMessageSentCount;
     String SENT = "SMS_SENT";
     String DELIVERED = "SMS_DELIVERED";
-    int i;
+   int i;
     ArrayList<String> strlist=new ArrayList<>();
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
@@ -94,9 +94,25 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+                else if(message.equalsIgnoreCase("QUOTE POTATO"))
+                {
+                    //sms_send="N/A";
+                   i=0;
+                    RefinedQuotes ref;
+                    List<Quotes> quotesList = db.getAllQuotes("POTATO");
+                    for(Quotes quote:quotesList)
+                    {
+
+                        ref=new RefinedQuotes(quote,context,sender);
+                        strlist.add(ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton.");
+                        sms_send+=ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton. ";
+                    }
+
+                }
                 sendtv.setText(sms_send);
                 for(String str:strlist)
                 {
+
                     sendSMS(sender,str);
                 }
                // sendSMS(sender,sms_send.toString());
@@ -115,12 +131,13 @@ public class MainActivity extends AppCompatActivity {
     {
         Log.v("phoneNumber",phoneNumber);
         Log.v("message",message);
+        Log.v("i",Integer.toString(i));
         PendingIntent pi = PendingIntent.getActivity(this, 0,
                 new Intent(this,Dummy.class), 0);
         SmsManager sms = SmsManager.getDefault();
         if(i>2)
             return;
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
+        sms.sendTextMessage(phoneNumber, null, message, pi, null);
         ++i;
     }
 

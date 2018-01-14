@@ -20,7 +20,7 @@ public class RefinedQuotes {
         quant=q.getQuant();
         lid1=db.getLIDFarm(phone);
         lid2=db.getLIDRetail(q.getRid());
-        price=(Math.abs(lid2-lid1)*8);
+        price=(q.getPrice()-(Math.abs(lid2-lid1)*8));
     }
 
     public String getCommod() {
