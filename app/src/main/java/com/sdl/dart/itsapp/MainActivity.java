@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private int mMessageSentTotalParts;
     private int mMessageSentCount;
     String SENT = "SMS_SENT";
-    String DELIVERED = "SMS_DELIVERED";
+    String DELIVERED = "SMS_DELIVERED", redundant="";
    int i;
     ArrayList<String> strlist=new ArrayList<>();
 
@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) findViewById(R.id.txtview);
                 tv.setText(sender+message);
                 String sms_send ="";
+                if(redundant.equalsIgnoreCase(sender))
+                    return;
+                redundant=sender;
+
                 if(message.equalsIgnoreCase("QUOTE WHEAT"))
                 {
                     //sms_send="N/A";
@@ -94,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
-                else if(message.equalsIgnoreCase("QUOTE POTATO"))
+                else if(message.equalsIgnoreCase("QUOTE POTATOES"))
                 {
                     //sms_send="N/A";
                    i=0;
