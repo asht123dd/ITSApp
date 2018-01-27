@@ -18,7 +18,7 @@ import android.util.Log;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
-//Horray
+//Horray...
 public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     TextView sendtv;
