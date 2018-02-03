@@ -18,7 +18,8 @@ import android.util.Log;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
-//Horray......
+//Horray...
+
 public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     TextView sendtv;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int mMessageSentCount;
     String SENT = "SMS_SENT";
     String DELIVERED = "SMS_DELIVERED", redundant="";
-   int i;
+    int i;
     ArrayList<String> strlist=new ArrayList<>();
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
             // carry on the normal flow, as the case of  permissions  granted.
         }
     }
+
     private  boolean checkAndRequestPermissions() {
         int permissionSendMessage = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS);
