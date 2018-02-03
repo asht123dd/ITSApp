@@ -115,24 +115,24 @@ public class MainActivity extends AppCompatActivity {
                     //sms_send="N/A";
                    i=0;
                     RefinedQuotes ref;
-                    List<Quotes> quotesList = db.getAllQuotes("POTATO");
-                    for(Quotes quote:quotesList)
+                    List<RefinedQuotes> quotesList = db.get3BestQuotes("POTATO",sender,context);
+                    for(RefinedQuotes quote:quotesList)
                     {
 
-                        ref=new RefinedQuotes(quote,context,sender);
-                        strlist.add(ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton.");
-                        sms_send+=ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton. ";
+                       // ref=new RefinedQuotes(quote,context,sender);
+                        strlist.add(quote.getQuant()+" ton(s) of potatoes can be sold for ₹ "+quote.getPrice()+" per ton.");
+                       // sms_send+=ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton. ";
                     }
-
+                    db.addQuery(sender,"POTATO");
                 }
                 else if(words[0].equalsIgnoreCase("SELL"))
                 {
                     int quant=Integer.parseInt(words[1]);
-                    float currentprice;
-                    currentprice=db.executeSale(sender,db.getCommod(sender),quant,context);
+                    RefinedQuotes executedQuote;
+                    executedQuote=db.executeSale(sender,db.getCommod(sender),quant,context);
 
 
-                        String mess=quant+" ton wheat sold for "+currentprice+".";
+                        String mess=quant+" ton "+ executedQuote.getCommod()+" sold for "+executedQuote.getPrice()+".";
                         sendSMS2(sender,mess);
 
 

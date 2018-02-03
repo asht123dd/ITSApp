@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION=30;
+    private static final int DATABASE_VERSION=32;
     private static final String DATABASE_NAME="mpdb";
     private static final String TABLE_QUOTES="quotes";
     private static final String TABLE_RETAIL="retailers";
@@ -138,7 +138,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return "NO QUERY FOUND!";
 
     }
-    public float executeSale(String phone,String commodity,int quantity,Context con)
+    public RefinedQuotes executeSale(String phone,String commodity,int quantity,Context con)
     {
             SQLiteDatabase db=this.getWritableDatabase();
             Log.v("Indicator","EXECUTE SALE CALLED WITH phone, commodity and quantity="+phone+commodity+quantity);
@@ -154,7 +154,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String transaction="INSERT INTO "+TABLE_TRANSACTION+" VALUES("+Rid+","+Fid+",'"+commodity+"',"+quantity+","+Price+");";
             db.execSQL(sale);
             db.execSQL(transaction);
-            return Price;
+            return reflist.get(0);
     }
     public float getPrice(int Rid,String commod)
     {
