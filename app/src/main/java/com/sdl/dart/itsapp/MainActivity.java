@@ -77,44 +77,71 @@ public class MainActivity extends AppCompatActivity {
             if (intent.getAction().equalsIgnoreCase("otp")) {
                 final String message = intent.getStringExtra("message");
                 final String sender=intent.getStringExtra("sender");
-
+                String s = message;
+                String[] words = s.split("\\s+");
+                for (int i = 0; i < words.length; i++) {
+                    // You may want to check for a non-word character before blindly
+                    // performing a replacement
+                    // It may also be necessary to adjust the character class
+                    words[i] = words[i].replaceAll("[^\\w]", "");
+                }
                 TextView tv = (TextView) findViewById(R.id.txtview);
                 tv.setText(sender+message);
                 String sms_send ="";
-                if(redundant.equalsIgnoreCase(sender))
+               if(redundant.equalsIgnoreCase(sender+message))
+                {
+                    Log.v("Catch","caught");
                     return;
-                redundant=sender;
+                }
+                redundant=sender+message;
 
                 if(message.equalsIgnoreCase("QUOTE WHEAT"))
                 {
                     //sms_send="N/A";
                     i=0;
+                    int lid=db.getLIDFarm(sender);
                     RefinedQuotes ref;
-                    List<Quotes> quotesList = db.getAllQuotes("WHEAT");
-                    for(Quotes quote:quotesList)
+                    Log.v("Indicator","GET 3 BEST QUOTES CALLED IN MAIN ACTIVITY!!!");
+                    List<RefinedQuotes> quotesList = db.get3BestQuotes("WHEAT",sender,context);
+                    for(RefinedQuotes quote:quotesList)
                     {
 
-                        ref=new RefinedQuotes(quote,context,sender);
-                        strlist.add(ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton.");
-                        sms_send+=ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton, ";
-                    }
+                        //Refine(quote,lid);
+                        strlist.add(quote.getQuant()+" ton(s) of wheat can be sold for ₹ "+quote.getPrice()+" per ton.");
 
+                    }
+                    db.addQuery(sender,"WHEAT");
                 }
                 else if(message.equalsIgnoreCase("QUOTE POTATOES"))
                 {
                     //sms_send="N/A";
                    i=0;
                     RefinedQuotes ref;
-                    List<Quotes> quotesList = db.getAllQuotes("POTATO");
-                    for(Quotes quote:quotesList)
+                    List<RefinedQuotes> quotesList = db.get3BestQuotes("POTATO",sender,context);
+                    for(RefinedQuotes quote:quotesList)
                     {
 
-                        ref=new RefinedQuotes(quote,context,sender);
-                        strlist.add(ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton.");
-                        sms_send+=ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton. ";
+                       // ref=new RefinedQuotes(quote,context,sender);
+                        strlist.add(quote.getQuant()+" ton(s) of potatoes can be sold for ₹ "+quote.getPrice()+" per ton.");
+                       // sms_send+=ref.getQuant()+" ton(s) of potatoes can be sold for ₹ "+ref.getPrice()+" per ton. ";
                     }
+                    db.addQuery(sender,"POTATO");
+                }
+                else if(words[0].equalsIgnoreCase("SELL"))
+                {
+                    int quant=Integer.parseInt(words[1]);
+                    RefinedQuotes executedQuote;
+                    executedQuote=db.executeSale(sender,db.getCommod(sender),quant,context);
+
+
+                        String mess=quant+" ton "+ executedQuote.getCommod()+" sold for "+executedQuote.getPrice()+".";
+                        sendSMS2(sender,mess);
+
+
 
                 }
+               /* strlist.add(ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton.");
+                sms_send+=ref.getQuant()+" ton(s) of wheat can be sold for ₹ "+ref.getPrice()+" per ton, ";*/
                 sendtv.setText(sms_send);
                 for(String str:strlist)
                 {
@@ -125,6 +152,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    void Refine(Quotes q,int lid)
+    {
+        int lidr=db.getLIDRetail(q.getRid());
+        q.setPrice(q.getPrice()-((Math.abs(lid-lidr))*8));
+    }
+
     @Override
     public void onResume() {
         LocalBroadcastManager.getInstance(this).
@@ -145,6 +178,18 @@ public class MainActivity extends AppCompatActivity {
             return;
         sms.sendTextMessage(phoneNumber, null, message, pi, null);
         ++i;
+    }
+    private void sendSMS2(String phoneNumber, String message)
+    {
+        Log.v("phoneNumber",phoneNumber);
+        Log.v("message",message);
+        Log.v("i",Integer.toString(i));
+        PendingIntent pi = PendingIntent.getActivity(this, 0,
+                new Intent(this,Dummy.class), 0);
+        SmsManager sms = SmsManager.getDefault();
+
+        sms.sendTextMessage(phoneNumber, null, message, pi, null);
+
     }
 
   /*  @Override
